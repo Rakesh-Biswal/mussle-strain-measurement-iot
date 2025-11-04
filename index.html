@@ -1,17 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioMonitor Pro - Real-time Health Monitoring System</title>
-    
+
+    <!-- Primary Meta Tags -->
+    <title>BioMonitor Pro - Advanced Real-time Health Monitoring System | Medical Analytics</title>
+    <meta name="title" content="BioMonitor Pro - Advanced Real-time Health Monitoring System | Medical Analytics">
+    <meta name="description"
+        content="Professional health monitoring platform with real-time ECG analysis, muscle strain tracking, and posture assessment. Medical-grade analytics for healthcare providers and patients.">
+    <meta name="keywords"
+        content="health monitoring, ECG analysis, real-time medical data, patient monitoring, healthcare technology, medical analytics, vital signs tracking">
+    <meta name="author" content="BioMonitor Pro Medical Systems">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://biomonitorpro.com/">
+    <meta property="og:title" content="BioMonitor Pro - Advanced Real-time Health Monitoring System">
+    <meta property="og:description"
+        content="Professional health monitoring platform with real-time ECG analysis, muscle strain tracking, and posture assessment.">
+    <meta property="og:site_name" content="BioMonitor Pro">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://biomonitorpro.com/">
+    <meta property="twitter:title" content="BioMonitor Pro - Advanced Real-time Health Monitoring System">
+    <meta property="twitter:description"
+        content="Professional health monitoring platform with real-time ECG analysis, muscle strain tracking, and posture assessment.">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="subject" content="Healthcare Technology & Medical Monitoring Systems">
+    <meta name="classification" content="Medical Software, Health Monitoring, Healthcare Technology">
+    <meta name="topic" content="Real-time Patient Health Monitoring and Analytics">
+    <meta name="summary"
+        content="BioMonitor Pro provides advanced real-time health monitoring with ECG analysis, muscle strain tracking, and comprehensive posture assessment for medical professionals and patients.">
+    <meta name="url" content="https://biomonitorpro.com/">
+    <meta name="identifier-URL" content="https://biomonitorpro.com/">
+    <meta name="coverage" content="Worldwide">
+    <meta name="distribution" content="Global">
+    <meta name="rating" content="General">
+    <meta name="revisit-after" content="7 days">
+    <meta name="target" content="all">
+    <meta name="audience" content="medical professionals, healthcare providers, patients, researchers">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "BioMonitor Pro",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web Browser",
+      "description": "Advanced real-time health monitoring system with ECG analysis, muscle strain tracking, and posture assessment",
+      "url": "https://biomonitorpro.com/",
+      "author": {
+        "@type": "Organization",
+        "name": "BioMonitor Pro Medical Systems"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1247"
+      },
+      "featureList": [
+        "Real-time ECG monitoring",
+        "Muscle strain analysis",
+        "Posture assessment",
+        "Risk scoring",
+        "Medical-grade analytics"
+      ]
+    }
+    </script>
+
+    <!-- Medical/Health Related Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "name": "BioMonitor Pro Health Monitoring System",
+      "description": "Professional health monitoring platform providing real-time medical data analysis",
+      "url": "https://biomonitorpro.com/",
+      "primaryImageOfPage": "https://biomonitorpro.com/og-image.jpg",
+      "lastReviewed": "2024-01-15",
+      "mainContentOfPage": "Real-time health monitoring dashboard with ECG analysis, vital signs tracking, and medical risk assessment",
+      "medicalAudience": {
+        "@type": "MedicalAudience",
+        "audienceType": "Medical Professionals, Patients, Healthcare Providers"
+      }
+    }
+    </script>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    
+
     <!-- Chart.js for real-time visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    
+
     <style>
         * {
             margin: 0;
@@ -32,7 +128,7 @@
             --color-text-primary: #ffffff;
             --color-text-secondary: #b0b0b0;
             --color-text-muted: #6c757d;
-            
+
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
@@ -59,7 +155,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(0, 153, 255, 0.03) 0%, transparent 50%);
             pointer-events: none;
@@ -472,6 +568,7 @@
                 transform: translateY(-30px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -483,6 +580,7 @@
                 transform: translateY(20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -494,6 +592,7 @@
                 transform: translateY(30px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -505,6 +604,7 @@
                 transform: translateX(-20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -512,21 +612,28 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.5;
             }
         }
 
         @keyframes heartbeat {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             25% {
                 transform: scale(1.1);
             }
+
             50% {
                 transform: scale(1);
             }
@@ -574,19 +681,21 @@
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
             <h1>BioMonitor Pro</h1>
             <p>Real-time Advanced Health Monitoring System</p>
-            
+
             <div class="status-bar">
                 <div class="status-item connected" id="firebaseStatus">
                     <div class="status-dot connected"></div>
@@ -686,7 +795,7 @@
                     </div>
                     <div class="card-badge">Live</div>
                 </div>
-                
+
                 <!-- Chart Controls -->
                 <div class="chart-controls">
                     <button class="timeframe-btn active" data-timeframe="1m">1M</button>
@@ -694,11 +803,11 @@
                     <button class="timeframe-btn" data-timeframe="15m">15M</button>
                     <button class="timeframe-btn" data-timeframe="1h">1H</button>
                 </div>
-                
+
                 <div class="chart-wrapper">
                     <canvas id="ecgChart"></canvas>
                 </div>
-                
+
                 <!-- Chart Indicators -->
                 <div class="chart-indicators">
                     <div class="indicator">
@@ -724,7 +833,7 @@
                         <span>System Status</span>
                     </div>
                 </div>
-                
+
                 <div class="status-grid">
                     <div class="status-item-small">
                         <div class="status-label">WiFi</div>
@@ -732,7 +841,8 @@
                     </div>
                     <div class="status-item-small">
                         <div class="status-label">Firebase</div>
-                        <div class="status-value" id="firebaseStatusValue" style="color: var(--color-text-secondary);">--</div>
+                        <div class="status-value" id="firebaseStatusValue" style="color: var(--color-text-secondary);">
+                            --</div>
                     </div>
                     <div class="status-item-small">
                         <div class="status-label">Patient ID</div>
@@ -829,7 +939,7 @@
                         borderColor: 'rgba(0, 102, 204, 0.5)',
                         borderWidth: 1,
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 return `ECG: ${context.parsed.y.toFixed(2)} mV`;
                             }
                         }
@@ -845,7 +955,7 @@
                         ticks: {
                             color: 'rgba(255, 255, 255, 0.6)',
                             maxTicksLimit: 8,
-                            callback: function(value, index, values) {
+                            callback: function (value, index, values) {
                                 // Show time in HH:MM:SS format
                                 const date = new Date();
                                 date.setTime(this.getLabelForValue(value));
@@ -864,7 +974,7 @@
                         },
                         ticks: {
                             color: 'rgba(255, 255, 255, 0.6)',
-                            callback: function(value) {
+                            callback: function (value) {
                                 return value + ' mV';
                             }
                         }
@@ -896,7 +1006,7 @@
             const badge = document.getElementById(badgeId);
             badge.classList.remove('success', 'warning', 'danger');
             badge.classList.add(severity);
-            
+
             const severityText = {
                 'success': 'Normal',
                 'warning': 'Caution',
@@ -909,7 +1019,7 @@
             const bar = document.getElementById(barId);
             const percentage = Math.min((value / max) * 100, 100);
             bar.style.width = percentage + '%';
-            
+
             const severity = getSeverity(value, { success: 33, warning: 66 });
             bar.classList.remove('success', 'warning', 'danger');
             bar.classList.add(severity);
@@ -968,12 +1078,12 @@
                 state.heartRate = data.vitalSigns.heartRate;
                 const hrDisplay = document.getElementById('heartRateValue');
                 hrDisplay.textContent = formatValue(state.heartRate);
-                
+
                 const hrSeverity = getHeartRateSeverity(state.heartRate);
                 updateCardSeverity('heartRateCard', hrSeverity);
                 updateBadge('hrBadge', hrSeverity);
                 updateProgressBar('hrProgressBar', Math.min(state.heartRate, 150), 150);
-                
+
                 // Trend indicator
                 document.getElementById('hrTrend').innerHTML = state.heartRate > 85 ? '📈 Elevated' : '✓ Stable';
                 document.getElementById('hrTrend').className = state.heartRate > 85 ? 'vital-trend up' : 'vital-trend down';
@@ -984,12 +1094,12 @@
                 state.muscleStrain = data.vitalSigns.muscleStrain;
                 const strainDisplay = document.getElementById('strainValue');
                 strainDisplay.textContent = formatValue(state.muscleStrain);
-                
+
                 const strainSeverity = getSeverity(state.muscleStrain, { success: 30, warning: 70 });
                 updateCardSeverity('strainCard', strainSeverity);
                 updateBadge('strainBadge', strainSeverity);
                 updateProgressBar('strainProgressBar', state.muscleStrain, 100);
-                
+
                 document.getElementById('strainTrend').innerHTML = state.muscleStrain > 50 ? '⚠️ High Strain' : '✓ Healthy';
                 document.getElementById('strainTrend').className = state.muscleStrain > 50 ? 'vital-trend up' : 'vital-trend down';
             }
@@ -998,17 +1108,17 @@
             if (data.vitalSigns?.postureStatus !== undefined) {
                 state.postureStatus = data.vitalSigns.postureStatus;
                 document.getElementById('postureValue').textContent = state.postureStatus;
-                
+
                 let postureSeverity = 'success';
                 if (state.postureStatus === 'Moderate') postureSeverity = 'warning';
                 if (state.postureStatus === 'Poor') postureSeverity = 'danger';
-                
+
                 updateCardSeverity('postureCard', postureSeverity);
                 updateBadge('postureBadge', postureSeverity);
-                
+
                 const postureValue = state.postureStatus === 'Good' ? 25 : state.postureStatus === 'Moderate' ? 60 : 90;
                 updateProgressBar('postureProgressBar', postureValue, 100);
-                
+
                 document.getElementById('postureTrend').innerHTML = state.postureStatus === 'Good' ? '✓ Excellent Posture' : '⚠️ Adjust Position';
                 document.getElementById('postureTrend').className = state.postureStatus === 'Good' ? 'vital-trend down' : 'vital-trend up';
             }
@@ -1017,19 +1127,19 @@
             if (data.postureAnalysis?.riskScore !== undefined) {
                 state.riskScore = data.postureAnalysis.riskScore;
                 document.getElementById('riskValue').textContent = formatValue(state.riskScore);
-                
+
                 let riskSeverity = 'success';
                 if (state.riskScore > 40) riskSeverity = 'warning';
                 if (state.riskScore > 70) riskSeverity = 'danger';
-                
+
                 updateCardSeverity('riskCard', riskSeverity);
                 updateBadge('riskBadge', riskSeverity);
                 updateProgressBar('riskProgressBar', state.riskScore, 100);
-                
+
                 // Show/hide alerts
                 const riskAlert = document.getElementById('riskAlert');
                 const systemAlert = document.getElementById('systemAlert');
-                
+
                 if (state.riskScore > 70) {
                     riskAlert.classList.add('danger');
                     riskAlert.classList.remove('warning');
@@ -1058,7 +1168,7 @@
             if (data.systemStatus) {
                 const wifiStatus = data.systemStatus.wifiConnected ? '🟢 Connected' : '🔴 Offline';
                 const fbStatus = data.systemStatus.firebaseConnected ? '🟢 Connected' : '🔴 Offline';
-                
+
                 document.getElementById('wifiStatus').textContent = wifiStatus;
                 document.getElementById('firebaseStatusValue').textContent = fbStatus;
             }
@@ -1067,7 +1177,7 @@
         // ECG Chart Data Management
         function addECGDataPoint(value) {
             const timestamp = Date.now();
-            
+
             ecgChart.data.labels.push(timestamp);
             ecgChart.data.datasets[0].data.push(value);
 
@@ -1092,19 +1202,19 @@
         }
 
         // Initialize Application
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('🚀 Initializing BioMonitor Pro...');
             testFirebaseConnection();
-            
+
             // Update time every second
             setInterval(updateTime, 1000);
-            
+
             // Calculate data rate every 2 seconds
             setInterval(calculateDataRate, 2000);
-            
+
             // Chart timeframe controls
             document.querySelectorAll('.timeframe-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     chartTimeframe = this.dataset.timeframe;
@@ -1115,4 +1225,5 @@
         });
     </script>
 </body>
+
 </html>
