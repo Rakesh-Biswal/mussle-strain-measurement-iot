@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioMonitor Pro - Real-time Health Monitoring System</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js for real-time visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #0066cc;
+            --color-secondary: #004d99;
+            --color-accent: #0099ff;
+            --color-danger: #dc3545;
+            --color-warning: #ffc107;
+            --color-success: #28a745;
+            --color-dark-bg: #0a1929;
+            --color-card-bg: rgba(13, 32, 51, 0.9);
+            --color-card-border: rgba(0, 102, 204, 0.2);
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #b0b0b0;
+            --color-text-muted: #6c757d;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background: linear-gradient(135deg, var(--color-dark-bg) 0%, #0a1a2e 50%, #0f2541 100%);
+            background-attachment: fixed;
+            color: var(--color-text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 153, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-bottom: 1px solid rgba(0, 102, 204, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(0, 102, 204, 0.1);
+            border: 1px solid var(--color-card-border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-item.connected {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+
+        .status-item.disconnected {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: var(--color-success);
+        }
+
+        .status-dot.disconnected {
+            background: var(--color-danger);
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard.large-chart {
+            grid-template-columns: 2fr 1fr;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard.large-chart {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Base */
+        .card {
+            background: var(--color-card-bg);
+            border: 1px solid var(--color-card-border);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            position: relative;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 102, 204, 0.4);
+            box-shadow: 0 0 20px rgba(0, 102, 204, 0.15), var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card.danger {
+            background: rgba(220, 53, 69, 0.08);
+            border-color: rgba(220, 53, 69, 0.4);
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.2), inset 0 0 20px rgba(220, 53, 69, 0.05);
+        }
+
+        .card.warning {
+            background: rgba(255, 193, 7, 0.08);
+            border-color: rgba(255, 193, 7, 0.4);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.2), inset 0 0 20px rgba(255, 193, 7, 0.05);
+        }
+
+        .card.success {
+            background: rgba(40, 167, 69, 0.08);
+            border-color: rgba(40, 167, 69, 0.4);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.2), inset 0 0 20px rgba(40, 167, 69, 0.05);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 102, 204, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 1.3rem;
+        }
+
+        .card-badge {
+            padding: 4px 12px;
+            background: rgba(0, 102, 204, 0.2);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-badge.danger {
+            background: rgba(220, 53, 69, 0.2);
+            color: var(--color-danger);
+        }
+
+        .card-badge.warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--color-warning);
+        }
+
+        .card-badge.success {
+            background: rgba(40, 167, 69, 0.2);
+            color: var(--color-success);
+        }
+
+        /* Vital Sign Card */
+        .vital-card {
+            text-align: center;
+        }
+
+        .vital-value {
+            font-size: 3rem;
+            font-weight: 600;
+            margin: 20px 0;
+            color: var(--color-primary);
+            font-variant-numeric: tabular-nums;
+            animation: slideUp 0.6s ease;
+        }
+
+        .vital-card.danger .vital-value {
+            color: var(--color-danger);
+        }
+
+        .vital-card.warning .vital-value {
+            color: var(--color-warning);
+        }
+
+        .vital-card.success .vital-value {
+            color: var(--color-success);
+        }
+
+        .vital-unit {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .vital-trend {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+            margin-top: 12px;
+        }
+
+        .vital-trend.up {
+            color: var(--color-danger);
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .vital-trend.down {
+            color: var(--color-success);
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, var(--color-danger), #e74c3c);
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, var(--color-warning), #f39c12);
+        }
+
+        .progress-fill.success {
+            background: linear-gradient(90deg, var(--color-success), #2ecc71);
+        }
+
+        /* ECG Chart Card */
+        .chart-card {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 1024px) {
+            .chart-card {
+                grid-column: span 1;
+            }
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            margin-top: 12px;
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: none;
+            animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.danger {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .alert.warning {
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .alert-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .status-item-small {
+            padding: 12px;
+            background: rgba(0, 102, 204, 0.05);
+            border: 1px solid var(--color-card-border);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-item-small:hover {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: rgba(0, 102, 204, 0.3);
+        }
+
+        .status-label {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .status-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        /* Trading-style ECG Chart */
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .timeframe-btn {
+            padding: 6px 12px;
+            background: rgba(0, 102, 204, 0.1);
+            border: 1px solid var(--color-card-border);
+            border-radius: 4px;
+            color: var(--color-text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeframe-btn.active {
+            background: rgba(0, 102, 204, 0.3);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .chart-indicators {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .animate-heartbeat {
+            animation: heartbeat 0.8s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card {
+                grid-column: span 1;
+            }
+
+            .vital-value {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(0, 102, 204, 0.1) 25%, rgba(0, 102, 204, 0.05) 50%, rgba(0, 102, 204, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>BioMonitor Pro</h1>
+            <p>Real-time Advanced Health Monitoring System</p>
+            
+            <div class="status-bar">
+                <div class="status-item connected" id="firebaseStatus">
+                    <div class="status-dot connected"></div>
+                    <span>Firebase Connected</span>
+                </div>
+                <div class="status-item" id="dataStatus">
+                    <div class="status-dot"></div>
+                    <span>Waiting for data...</span>
+                </div>
+                <div class="status-item" id="updateTime">
+                    <span>Last Update: --:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Heart Rate Card -->
+            <div class="card vital-card" id="heartRateCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">❤️</span>
+                        <span>Heart Rate</span>
+                    </div>
+                    <div class="card-badge" id="hrBadge">Normal</div>
+                </div>
+                <div class="vital-value" id="heartRateValue">--</div>
+                <div class="vital-unit">BPM (Beats Per Minute)</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="hrProgressBar" style="width: 0%"></div>
+                </div>
+                <div class="vital-trend" id="hrTrend">-</div>
+            </div>
+
+            <!-- Muscle Strain Card -->
+            <div class="card vital-card" id="strainCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">💪</span>
+                        <span>Muscle Strain</span>
+                    </div>
+                    <div class="card-badge" id="strainBadge">Normal</div>
+                </div>
+                <div class="vital-value" id="strainValue">--</div>
+                <div class="vital-unit">Strain Level %</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="strainProgressBar" style="width: 0%"></div>
+                </div>
+                <div class="vital-trend" id="strainTrend">-</div>
+            </div>
+
+            <!-- Posture Status Card -->
+            <div class="card vital-card" id="postureCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">🧍</span>
+                        <span>Posture Status</span>
+                    </div>
+                    <div class="card-badge" id="postureBadge">Normal</div>
+                </div>
+                <div class="vital-value" id="postureValue">--</div>
+                <div class="vital-unit">Body Position Analysis</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="postureProgressBar" style="width: 0%"></div>
+                </div>
+                <div class="vital-trend" id="postureTrend">-</div>
+            </div>
+
+            <!-- Risk Score Card -->
+            <div class="card vital-card" id="riskCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">⚠️</span>
+                        <span>Risk Assessment</span>
+                    </div>
+                    <div class="card-badge" id="riskBadge">Low</div>
+                </div>
+                <div class="vital-value" id="riskValue">--</div>
+                <div class="vital-unit">Overall Risk Score (0-100)</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="riskProgressBar" style="width: 0%"></div>
+                </div>
+                <div class="alert warning" id="riskAlert">
+                    <strong>⚠️ Moderate Risk Detected</strong>
+                    <p class="alert-text">Please consider taking a break and adjusting your position.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ECG Chart -->
+        <div class="dashboard large-chart">
+            <div class="card chart-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">📊</span>
+                        <span>Real-time ECG Waveform</span>
+                    </div>
+                    <div class="card-badge">Live</div>
+                </div>
+                
+                <!-- Chart Controls -->
+                <div class="chart-controls">
+                    <button class="timeframe-btn active" data-timeframe="1m">1M</button>
+                    <button class="timeframe-btn" data-timeframe="5m">5M</button>
+                    <button class="timeframe-btn" data-timeframe="15m">15M</button>
+                    <button class="timeframe-btn" data-timeframe="1h">1H</button>
+                </div>
+                
+                <div class="chart-wrapper">
+                    <canvas id="ecgChart"></canvas>
+                </div>
+                
+                <!-- Chart Indicators -->
+                <div class="chart-indicators">
+                    <div class="indicator">
+                        <div class="indicator-dot" style="background-color: rgba(0, 217, 255, 1)"></div>
+                        <span>ECG Signal</span>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-dot" style="background-color: rgba(40, 167, 69, 1)"></div>
+                        <span>Normal Range</span>
+                    </div>
+                    <div class="indicator">
+                        <div class="indicator-dot" style="background-color: rgba(220, 53, 69, 1)"></div>
+                        <span>Critical Level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-icon">🔧</span>
+                        <span>System Status</span>
+                    </div>
+                </div>
+                
+                <div class="status-grid">
+                    <div class="status-item-small">
+                        <div class="status-label">WiFi</div>
+                        <div class="status-value" id="wifiStatus" style="color: var(--color-text-secondary);">--</div>
+                    </div>
+                    <div class="status-item-small">
+                        <div class="status-label">Firebase</div>
+                        <div class="status-value" id="firebaseStatusValue" style="color: var(--color-text-secondary);">--</div>
+                    </div>
+                    <div class="status-item-small">
+                        <div class="status-label">Patient ID</div>
+                        <div class="status-value">PT-001</div>
+                    </div>
+                    <div class="status-item-small">
+                        <div class="status-label">Data Rate</div>
+                        <div class="status-value" id="dataRate">0 Hz</div>
+                    </div>
+                </div>
+
+                <div class="alert danger" id="systemAlert" style="margin-top: 20px;">
+                    <strong>🚨 Critical Status</strong>
+                    <p class="alert-text">Immediate medical attention required. Call emergency services.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFhAJCDq2C-47Bm8i8x4yx6mN8VFBaZLw",
+            authDomain: "mue-strain-monitoring.firebaseapp.com",
+            databaseURL: "https://mue-strain-monitoring-default-rtdb.firebaseio.com",
+            projectId: "mue-strain-monitoring",
+            storageBucket: "mue-strain-monitoring.firebasestorage.app",
+            messagingSenderId: "1015291684447",
+            appId: "1:1015291684447:web:09b2d5519b400d2603ddea",
+            measurementId: "G-3X5LJNMY7X"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // State Management
+        let state = {
+            heartRate: 0,
+            muscleStrain: 0,
+            postureStatus: '--',
+            riskScore: 0,
+            ecgValue: 0,
+            isConnected: false,
+            lastUpdate: null,
+            dataPoints: 0,
+            lastDataCount: 0,
+            dataRate: 0
+        };
+
+        let ecgDataPoints = [];
+        const MAX_ECG_POINTS = 200;
+        let chartTimeframe = '1m';
+
+        // Initialize Chart
+        const ctx = document.getElementById('ecgChart').getContext('2d');
+        const ecgChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'ECG Signal (mV)',
+                    data: [],
+                    borderColor: 'rgba(0, 217, 255, 1)',
+                    backgroundColor: 'rgba(0, 217, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    clip: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'nearest'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(13, 32, 51, 0.9)',
+                        titleColor: 'rgba(255, 255, 255, 0.9)',
+                        bodyColor: 'rgba(255, 255, 255, 0.8)',
+                        borderColor: 'rgba(0, 102, 204, 0.5)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return `ECG: ${context.parsed.y.toFixed(2)} mV`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            color: 'rgba(0, 102, 204, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.6)',
+                            maxTicksLimit: 8,
+                            callback: function(value, index, values) {
+                                // Show time in HH:MM:SS format
+                                const date = new Date();
+                                date.setTime(this.getLabelForValue(value));
+                                return date.toLocaleTimeString();
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        beginAtZero: true,
+                        min: 0,
+                        max: 1024,
+                        grid: {
+                            color: 'rgba(0, 102, 204, 0.1)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.6)',
+                            callback: function(value) {
+                                return value + ' mV';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Helper Functions
+        function getSeverity(value, thresholds) {
+            if (value <= thresholds.success) return 'success';
+            if (value <= thresholds.warning) return 'warning';
+            return 'danger';
+        }
+
+        function getHeartRateSeverity(hr) {
+            if (hr < 60 || hr > 100) return 'warning';
+            if (hr < 40 || hr > 130) return 'danger';
+            return 'success';
+        }
+
+        function updateCardSeverity(cardId, severity) {
+            const card = document.getElementById(cardId);
+            card.classList.remove('success', 'warning', 'danger');
+            card.classList.add(severity);
+        }
+
+        function updateBadge(badgeId, severity) {
+            const badge = document.getElementById(badgeId);
+            badge.classList.remove('success', 'warning', 'danger');
+            badge.classList.add(severity);
+            
+            const severityText = {
+                'success': 'Normal',
+                'warning': 'Caution',
+                'danger': 'Critical'
+            };
+            badge.textContent = severityText[severity];
+        }
+
+        function updateProgressBar(barId, value, max = 100) {
+            const bar = document.getElementById(barId);
+            const percentage = Math.min((value / max) * 100, 100);
+            bar.style.width = percentage + '%';
+            
+            const severity = getSeverity(value, { success: 33, warning: 66 });
+            bar.classList.remove('success', 'warning', 'danger');
+            bar.classList.add(severity);
+        }
+
+        function formatValue(value) {
+            return typeof value === 'number' ? value.toFixed(0) : value;
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('updateTime').textContent = `Last Update: ${timeString}`;
+        }
+
+        // Firebase Connection
+        function testFirebaseConnection() {
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    state.isConnected = true;
+                    document.getElementById('firebaseStatus').classList.add('connected');
+                    console.log('✅ Firebase Connected');
+                    startDataListener();
+                } else {
+                    state.isConnected = false;
+                    document.getElementById('firebaseStatus').classList.remove('connected');
+                    console.log('❌ Firebase Disconnected');
+                }
+            });
+        }
+
+        // Real-time Data Listener
+        function startDataListener() {
+            database.ref('patientData').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('dataStatus').classList.add('connected');
+                    document.getElementById('dataStatus').innerHTML = '<div class="status-dot connected animate-pulse"></div><span>Live Data Stream</span>';
+                    updateDashboard(data);
+                } else {
+                    document.getElementById('dataStatus').classList.remove('connected');
+                    document.getElementById('dataStatus').innerHTML = '<div class="status-dot"></div><span>Waiting for data...</span>';
+                }
+            });
+        }
+
+        // Update Dashboard
+        function updateDashboard(data) {
+            console.log('📊 Data received:', data);
+            updateTime();
+            state.dataPoints++;
+
+            // Update Heart Rate
+            if (data.vitalSigns?.heartRate !== undefined) {
+                state.heartRate = data.vitalSigns.heartRate;
+                const hrDisplay = document.getElementById('heartRateValue');
+                hrDisplay.textContent = formatValue(state.heartRate);
+                
+                const hrSeverity = getHeartRateSeverity(state.heartRate);
+                updateCardSeverity('heartRateCard', hrSeverity);
+                updateBadge('hrBadge', hrSeverity);
+                updateProgressBar('hrProgressBar', Math.min(state.heartRate, 150), 150);
+                
+                // Trend indicator
+                document.getElementById('hrTrend').innerHTML = state.heartRate > 85 ? '📈 Elevated' : '✓ Stable';
+                document.getElementById('hrTrend').className = state.heartRate > 85 ? 'vital-trend up' : 'vital-trend down';
+            }
+
+            // Update Muscle Strain
+            if (data.vitalSigns?.muscleStrain !== undefined) {
+                state.muscleStrain = data.vitalSigns.muscleStrain;
+                const strainDisplay = document.getElementById('strainValue');
+                strainDisplay.textContent = formatValue(state.muscleStrain);
+                
+                const strainSeverity = getSeverity(state.muscleStrain, { success: 30, warning: 70 });
+                updateCardSeverity('strainCard', strainSeverity);
+                updateBadge('strainBadge', strainSeverity);
+                updateProgressBar('strainProgressBar', state.muscleStrain, 100);
+                
+                document.getElementById('strainTrend').innerHTML = state.muscleStrain > 50 ? '⚠️ High Strain' : '✓ Healthy';
+                document.getElementById('strainTrend').className = state.muscleStrain > 50 ? 'vital-trend up' : 'vital-trend down';
+            }
+
+            // Update Posture Status
+            if (data.vitalSigns?.postureStatus !== undefined) {
+                state.postureStatus = data.vitalSigns.postureStatus;
+                document.getElementById('postureValue').textContent = state.postureStatus;
+                
+                let postureSeverity = 'success';
+                if (state.postureStatus === 'Moderate') postureSeverity = 'warning';
+                if (state.postureStatus === 'Poor') postureSeverity = 'danger';
+                
+                updateCardSeverity('postureCard', postureSeverity);
+                updateBadge('postureBadge', postureSeverity);
+                
+                const postureValue = state.postureStatus === 'Good' ? 25 : state.postureStatus === 'Moderate' ? 60 : 90;
+                updateProgressBar('postureProgressBar', postureValue, 100);
+                
+                document.getElementById('postureTrend').innerHTML = state.postureStatus === 'Good' ? '✓ Excellent Posture' : '⚠️ Adjust Position';
+                document.getElementById('postureTrend').className = state.postureStatus === 'Good' ? 'vital-trend down' : 'vital-trend up';
+            }
+
+            // Update Risk Score
+            if (data.postureAnalysis?.riskScore !== undefined) {
+                state.riskScore = data.postureAnalysis.riskScore;
+                document.getElementById('riskValue').textContent = formatValue(state.riskScore);
+                
+                let riskSeverity = 'success';
+                if (state.riskScore > 40) riskSeverity = 'warning';
+                if (state.riskScore > 70) riskSeverity = 'danger';
+                
+                updateCardSeverity('riskCard', riskSeverity);
+                updateBadge('riskBadge', riskSeverity);
+                updateProgressBar('riskProgressBar', state.riskScore, 100);
+                
+                // Show/hide alerts
+                const riskAlert = document.getElementById('riskAlert');
+                const systemAlert = document.getElementById('systemAlert');
+                
+                if (state.riskScore > 70) {
+                    riskAlert.classList.add('danger');
+                    riskAlert.classList.remove('warning');
+                    riskAlert.innerHTML = '<strong>🚨 Critical Risk</strong><p class="alert-text">Immediate action required. Severe strain detected!</p>';
+                    riskAlert.classList.add('show');
+                    systemAlert.classList.add('show');
+                } else if (state.riskScore > 40) {
+                    riskAlert.classList.remove('danger');
+                    riskAlert.classList.add('warning');
+                    riskAlert.innerHTML = '<strong>⚠️ Moderate Risk</strong><p class="alert-text">Please consider taking a break and adjusting your position.</p>';
+                    riskAlert.classList.add('show');
+                    systemAlert.classList.remove('show');
+                } else {
+                    riskAlert.classList.remove('show');
+                    systemAlert.classList.remove('show');
+                }
+            }
+
+            // Update ECG Chart
+            if (data.vitalSigns?.ecgValue !== undefined) {
+                state.ecgValue = data.vitalSigns.ecgValue;
+                addECGDataPoint(state.ecgValue);
+            }
+
+            // Update System Status
+            if (data.systemStatus) {
+                const wifiStatus = data.systemStatus.wifiConnected ? '🟢 Connected' : '🔴 Offline';
+                const fbStatus = data.systemStatus.firebaseConnected ? '🟢 Connected' : '🔴 Offline';
+                
+                document.getElementById('wifiStatus').textContent = wifiStatus;
+                document.getElementById('firebaseStatusValue').textContent = fbStatus;
+            }
+        }
+
+        // ECG Chart Data Management
+        function addECGDataPoint(value) {
+            const timestamp = Date.now();
+            
+            ecgChart.data.labels.push(timestamp);
+            ecgChart.data.datasets[0].data.push(value);
+
+            if (ecgChart.data.labels.length > MAX_ECG_POINTS) {
+                ecgChart.data.labels.shift();
+                ecgChart.data.datasets[0].data.shift();
+            }
+
+            ecgChart.update('none');
+        }
+
+        // Calculate data rate
+        function calculateDataRate() {
+            const now = Date.now();
+            if (state.lastDataCountTime) {
+                const elapsed = (now - state.lastDataCountTime) / 1000;
+                state.dataRate = Math.round((state.dataPoints - state.lastDataCount) / elapsed);
+                document.getElementById('dataRate').textContent = state.dataRate + ' Hz';
+            }
+            state.lastDataCount = state.dataPoints;
+            state.lastDataCountTime = now;
+        }
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing BioMonitor Pro...');
+            testFirebaseConnection();
+            
+            // Update time every second
+            setInterval(updateTime, 1000);
+            
+            // Calculate data rate every 2 seconds
+            setInterval(calculateDataRate, 2000);
+            
+            // Chart timeframe controls
+            document.querySelectorAll('.timeframe-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    chartTimeframe = this.dataset.timeframe;
+                    // In a real implementation, this would adjust the chart data range
+                    console.log('Timeframe changed to:', chartTimeframe);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
