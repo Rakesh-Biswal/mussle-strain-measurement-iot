@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -166,6 +165,148 @@
             max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(13, 32, 51, 0.9);
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid var(--color-card-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .toggle-label {
+            color: var(--color-text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-danger);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--color-success);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Dashboard Blur Effect */
+        .dashboard-container {
+            transition: all 0.5s ease;
+        }
+        
+        .dashboard-container.blurred {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.3;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-dark-bg) 0%, #0a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .welcome-content {
+            text-align: center;
+            padding: 40px;
+            background: var(--color-card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--color-card-border);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            margin: 20px;
+        }
+        
+        .welcome-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .welcome-content p {
+            color: var(--color-text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .start-button {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 102, 204, 0.3);
         }
 
         /* Header */
@@ -519,6 +660,61 @@
             color: var(--color-primary);
         }
 
+        /* APDS-9960 Specific Styles */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .sensor-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 102, 204, 0.05);
+            border: 1px solid var(--color-card-border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sensor-item:hover {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: rgba(0, 102, 204, 0.3);
+        }
+
+        .sensor-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .sensor-label {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+        }
+
+        .gesture-indicator {
+            padding: 8px 16px;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: inline-block;
+            border: 1px solid var(--color-card-border);
+        }
+
         /* Trading-style ECG Chart */
         .chart-controls {
             display: flex;
@@ -568,7 +764,6 @@
                 transform: translateY(-30px);
                 opacity: 0;
             }
-
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -580,7 +775,6 @@
                 transform: translateY(20px);
                 opacity: 0;
             }
-
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -592,7 +786,6 @@
                 transform: translateY(30px);
                 opacity: 0;
             }
-
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -604,7 +797,6 @@
                 transform: translateX(-20px);
                 opacity: 0;
             }
-
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -612,28 +804,21 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.5;
             }
         }
 
         @keyframes heartbeat {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             25% {
                 transform: scale(1.1);
             }
-
             50% {
                 transform: scale(1);
             }
@@ -645,6 +830,22 @@
 
         .animate-heartbeat {
             animation: heartbeat 0.8s infinite;
+        }
+
+        /* Buzzer Animation */
+        @keyframes buzzerAlert {
+            0%, 100% {
+                background-color: var(--color-danger);
+                transform: scale(1);
+            }
+            50% {
+                background-color: #ff6b6b;
+                transform: scale(1.1);
+            }
+        }
+
+        .buzzer-active {
+            animation: buzzerAlert 0.5s infinite;
         }
 
         /* Responsive */
@@ -668,6 +869,12 @@
             .card {
                 padding: 20px;
             }
+
+            .toggle-container {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+            }
         }
 
         /* Loading Skeleton */
@@ -681,7 +888,6 @@
             0% {
                 background-position: 200% 0;
             }
-
             100% {
                 background-position: -200% 0;
             }
@@ -690,173 +896,216 @@
 </head>
 
 <body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <h1>🏥 BioMonitor Pro</h1>
+            <p>Advanced Real-time Health Monitoring System</p>
+            <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 30px;">
+                Professional health monitoring with ECG analysis, muscle strain tracking, and environmental sensing
+            </p>
+            <button class="start-button" id="startButton">Start Monitoring</button>
+        </div>
+    </div>
+
+    <!-- Toggle Switch -->
+    <div class="toggle-container">
+        <span class="toggle-label">MONITOR</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="monitorToggle" checked>
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>BioMonitor Pro</h1>
-            <p>Real-time Advanced Health Monitoring System</p>
+        <div class="dashboard-container" id="dashboardContainer">
+            <!-- Header -->
+            <div class="header">
+                <h1>BioMonitor Pro</h1>
+                <p>Real-time Advanced Health Monitoring System</p>
 
-            <div class="status-bar">
-                <div class="status-item connected" id="firebaseStatus">
-                    <div class="status-dot connected"></div>
-                    <span>Firebase Connected</span>
-                </div>
-                <div class="status-item" id="dataStatus">
-                    <div class="status-dot"></div>
-                    <span>Waiting for data...</span>
-                </div>
-                <div class="status-item" id="updateTime">
-                    <span>Last Update: --:--:--</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Dashboard -->
-        <div class="dashboard">
-            <!-- Heart Rate Card -->
-            <div class="card vital-card" id="heartRateCard">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">❤️</span>
-                        <span>Heart Rate</span>
+                <div class="status-bar">
+                    <div class="status-item connected" id="firebaseStatus">
+                        <div class="status-dot connected"></div>
+                        <span>Firebase Connected</span>
                     </div>
-                    <div class="card-badge" id="hrBadge">Normal</div>
-                </div>
-                <div class="vital-value" id="heartRateValue">--</div>
-                <div class="vital-unit">BPM (Beats Per Minute)</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="hrProgressBar" style="width: 0%"></div>
-                </div>
-                <div class="vital-trend" id="hrTrend">-</div>
-            </div>
-
-            <!-- Muscle Strain Card -->
-            <div class="card vital-card" id="strainCard">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">💪</span>
-                        <span>Muscle Strain</span>
+                    <div class="status-item" id="dataStatus">
+                        <div class="status-dot"></div>
+                        <span>Waiting for data...</span>
                     </div>
-                    <div class="card-badge" id="strainBadge">Normal</div>
-                </div>
-                <div class="vital-value" id="strainValue">--</div>
-                <div class="vital-unit">Strain Level %</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="strainProgressBar" style="width: 0%"></div>
-                </div>
-                <div class="vital-trend" id="strainTrend">-</div>
-            </div>
-
-            <!-- Posture Status Card -->
-            <div class="card vital-card" id="postureCard">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">🧍</span>
-                        <span>Posture Status</span>
-                    </div>
-                    <div class="card-badge" id="postureBadge">Normal</div>
-                </div>
-                <div class="vital-value" id="postureValue">--</div>
-                <div class="vital-unit">Body Position Analysis</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="postureProgressBar" style="width: 0%"></div>
-                </div>
-                <div class="vital-trend" id="postureTrend">-</div>
-            </div>
-
-            <!-- Risk Score Card -->
-            <div class="card vital-card" id="riskCard">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">⚠️</span>
-                        <span>Risk Assessment</span>
-                    </div>
-                    <div class="card-badge" id="riskBadge">Low</div>
-                </div>
-                <div class="vital-value" id="riskValue">--</div>
-                <div class="vital-unit">Overall Risk Score (0-100)</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="riskProgressBar" style="width: 0%"></div>
-                </div>
-                <div class="alert warning" id="riskAlert">
-                    <strong>⚠️ Moderate Risk Detected</strong>
-                    <p class="alert-text">Please consider taking a break and adjusting your position.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ECG Chart -->
-        <div class="dashboard large-chart">
-            <div class="card chart-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">📊</span>
-                        <span>Real-time ECG Waveform</span>
-                    </div>
-                    <div class="card-badge">Live</div>
-                </div>
-
-                <!-- Chart Controls -->
-                <div class="chart-controls">
-                    <button class="timeframe-btn active" data-timeframe="1m">1M</button>
-                    <button class="timeframe-btn" data-timeframe="5m">5M</button>
-                    <button class="timeframe-btn" data-timeframe="15m">15M</button>
-                    <button class="timeframe-btn" data-timeframe="1h">1H</button>
-                </div>
-
-                <div class="chart-wrapper">
-                    <canvas id="ecgChart"></canvas>
-                </div>
-
-                <!-- Chart Indicators -->
-                <div class="chart-indicators">
-                    <div class="indicator">
-                        <div class="indicator-dot" style="background-color: rgba(0, 217, 255, 1)"></div>
-                        <span>ECG Signal</span>
-                    </div>
-                    <div class="indicator">
-                        <div class="indicator-dot" style="background-color: rgba(40, 167, 69, 1)"></div>
-                        <span>Normal Range</span>
-                    </div>
-                    <div class="indicator">
-                        <div class="indicator-dot" style="background-color: rgba(220, 53, 69, 1)"></div>
-                        <span>Critical Level</span>
+                    <div class="status-item" id="updateTime">
+                        <span>Last Update: --:--:--</span>
                     </div>
                 </div>
             </div>
 
-            <!-- System Info Card -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-icon">🔧</span>
-                        <span>System Status</span>
+            <!-- Main Dashboard -->
+            <div class="dashboard">
+                <!-- Heart Rate Card -->
+                <div class="card vital-card" id="heartRateCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">❤️</span>
+                            <span>Heart Rate</span>
+                        </div>
+                        <div class="card-badge" id="hrBadge">Normal</div>
+                    </div>
+                    <div class="vital-value" id="heartRateValue">--</div>
+                    <div class="vital-unit">BPM (Beats Per Minute)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="hrProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="vital-trend" id="hrTrend">-</div>
+                </div>
+
+                <!-- Muscle Strain Card -->
+                <div class="card vital-card" id="strainCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">💪</span>
+                            <span>Muscle Strain</span>
+                        </div>
+                        <div class="card-badge" id="strainBadge">Normal</div>
+                    </div>
+                    <div class="vital-value" id="strainValue">--</div>
+                    <div class="vital-unit">Strain Level %</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="strainProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="vital-trend" id="strainTrend">-</div>
+                </div>
+
+                <!-- APDS-9960 Sensor Card -->
+                <div class="card" id="apdsCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">🌈</span>
+                            <span>Environmental Sensor</span>
+                        </div>
+                        <div class="card-badge" id="apdsBadge">Active</div>
+                    </div>
+                    
+                    <!-- Color Preview -->
+                    <div class="color-preview" id="colorPreview"></div>
+                    
+                    <!-- Sensor Grid -->
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="proximityValue">0</div>
+                            <div class="sensor-label">Proximity</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="ambientLightValue">0</div>
+                            <div class="sensor-label">Ambient Light</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="colorTempValue">0</div>
+                            <div class="sensor-label">Color Temp</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="brightnessValue">0</div>
+                            <div class="sensor-label">Brightness</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gesture Indicator -->
+                    <div class="gesture-indicator" id="gestureIndicator">
+                        Gesture: None
                     </div>
                 </div>
 
-                <div class="status-grid">
-                    <div class="status-item-small">
-                        <div class="status-label">WiFi</div>
-                        <div class="status-value" id="wifiStatus" style="color: var(--color-text-secondary);">--</div>
+                <!-- Risk Score Card -->
+                <div class="card vital-card" id="riskCard">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">⚠️</span>
+                            <span>Risk Assessment</span>
+                        </div>
+                        <div class="card-badge" id="riskBadge">Low</div>
                     </div>
-                    <div class="status-item-small">
-                        <div class="status-label">Firebase</div>
-                        <div class="status-value" id="firebaseStatusValue" style="color: var(--color-text-secondary);">
-                            --</div>
+                    <div class="vital-value" id="riskValue">--</div>
+                    <div class="vital-unit">Overall Risk Score (0-100)</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="riskProgressBar" style="width: 0%"></div>
                     </div>
-                    <div class="status-item-small">
-                        <div class="status-label">Patient ID</div>
-                        <div class="status-value">PT-001</div>
+                    <div class="alert warning" id="riskAlert">
+                        <strong>⚠️ Moderate Risk Detected</strong>
+                        <p class="alert-text">Please consider taking a break and adjusting your position.</p>
                     </div>
-                    <div class="status-item-small">
-                        <div class="status-label">Data Rate</div>
-                        <div class="status-value" id="dataRate">0 Hz</div>
+                </div>
+            </div>
+
+            <!-- ECG Chart and System Info -->
+            <div class="dashboard large-chart">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📊</span>
+                            <span>Real-time ECG Waveform</span>
+                        </div>
+                        <div class="card-badge">Live</div>
+                    </div>
+
+                    <!-- Chart Controls -->
+                    <div class="chart-controls">
+                        <button class="timeframe-btn active" data-timeframe="1s">1S</button>
+                        <button class="timeframe-btn" data-timeframe="5s">5S</button>
+                        <button class="timeframe-btn" data-timeframe="30s">30S</button>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="ecgChart"></canvas>
+                    </div>
+
+                    <!-- Chart Indicators -->
+                    <div class="chart-indicators">
+                        <div class="indicator">
+                            <div class="indicator-dot" style="background-color: rgba(0, 217, 255, 1)"></div>
+                            <span>ECG Signal</span>
+                        </div>
+                        <div class="indicator">
+                            <div class="indicator-dot" style="background-color: rgba(40, 167, 69, 1)"></div>
+                            <span>Normal Range</span>
+                        </div>
+                        <div class="indicator">
+                            <div class="indicator-dot" style="background-color: rgba(220, 53, 69, 1)"></div>
+                            <span>Critical Level</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="alert danger" id="systemAlert" style="margin-top: 20px;">
-                    <strong>🚨 Critical Status</strong>
-                    <p class="alert-text">Immediate medical attention required. Call emergency services.</p>
+                <!-- System Info Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">🔧</span>
+                            <span>System Status</span>
+                        </div>
+                    </div>
+
+                    <div class="status-grid">
+                        <div class="status-item-small">
+                            <div class="status-label">WiFi</div>
+                            <div class="status-value" id="wifiStatus">--</div>
+                        </div>
+                        <div class="status-item-small">
+                            <div class="status-label">Firebase</div>
+                            <div class="status-value" id="firebaseStatusValue">--</div>
+                        </div>
+                        <div class="status-item-small">
+                            <div class="status-label">Buzzer</div>
+                            <div class="status-value" id="buzzerStatus">🔇</div>
+                        </div>
+                        <div class="status-item-small">
+                            <div class="status-label">Data Rate</div>
+                            <div class="status-value" id="dataRate">0 Hz</div>
+                        </div>
+                    </div>
+
+                    <div class="alert danger" id="systemAlert" style="margin-top: 20px;">
+                        <strong>🚨 Critical Status</strong>
+                        <p class="alert-text">Immediate medical attention required. Call emergency services.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -887,15 +1136,21 @@
             riskScore: 0,
             ecgValue: 0,
             isConnected: false,
-            lastUpdate: null,
-            dataPoints: 0,
-            lastDataCount: 0,
-            dataRate: 0
+            monitorEnabled: true,
+            // APDS-9960 data
+            proximity: 0,
+            gesture: 0,
+            ambientLight: 0,
+            redLight: 0,
+            greenLight: 0,
+            blueLight: 0,
+            colorTemperature: 0,
+            brightness: 0
         };
 
         let ecgDataPoints = [];
-        const MAX_ECG_POINTS = 200;
-        let chartTimeframe = '1m';
+        const MAX_ECG_POINTS = 100;
+        let chartTimeframe = '1s';
 
         // Initialize Chart
         const ctx = document.getElementById('ecgChart').getContext('2d');
@@ -956,7 +1211,6 @@
                             color: 'rgba(255, 255, 255, 0.6)',
                             maxTicksLimit: 8,
                             callback: function (value, index, values) {
-                                // Show time in HH:MM:SS format
                                 const date = new Date();
                                 date.setTime(this.getLabelForValue(value));
                                 return date.toLocaleTimeString();
@@ -982,6 +1236,43 @@
                 }
             }
         });
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeToggleSwitch();
+            initializeWelcomeScreen();
+            testFirebaseConnection();
+        });
+
+        // Welcome Screen Functionality
+        function initializeWelcomeScreen() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const startButton = document.getElementById('startButton');
+            
+            startButton.addEventListener('click', function() {
+                welcomeScreen.classList.add('hidden');
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                }, 500);
+            });
+        }
+
+        // Toggle Switch Functionality
+        function initializeToggleSwitch() {
+            const toggle = document.getElementById('monitorToggle');
+            const dashboard = document.getElementById('dashboardContainer');
+            
+            toggle.addEventListener('change', function() {
+                state.monitorEnabled = this.checked;
+                if (this.checked) {
+                    dashboard.classList.remove('blurred');
+                    console.log('🔓 Monitor enabled');
+                } else {
+                    dashboard.classList.add('blurred');
+                    console.log('🔒 Monitor disabled');
+                }
+            });
+        }
 
         // Helper Functions
         function getSeverity(value, thresholds) {
@@ -1069,6 +1360,8 @@
 
         // Update Dashboard
         function updateDashboard(data) {
+            if (!state.monitorEnabled) return;
+            
             console.log('📊 Data received:', data);
             updateTime();
             state.dataPoints++;
@@ -1158,6 +1451,11 @@
                 }
             }
 
+            // Update APDS-9960 Data
+            if (data.apds9960) {
+                updateAPDS9960Display(data.apds9960);
+            }
+
             // Update ECG Chart
             if (data.vitalSigns?.ecgValue !== undefined) {
                 state.ecgValue = data.vitalSigns.ecgValue;
@@ -1171,22 +1469,113 @@
 
                 document.getElementById('wifiStatus').textContent = wifiStatus;
                 document.getElementById('firebaseStatusValue').textContent = fbStatus;
+
+                // Update buzzer status
+                const buzzerStatus = document.getElementById('buzzerStatus');
+                if (data.systemStatus.buzzerActive) {
+                    buzzerStatus.textContent = '🔊';
+                    buzzerStatus.style.color = 'var(--color-danger)';
+                    buzzerStatus.classList.add('buzzer-active');
+                    
+                    // Play buzzer sound if monitor is enabled
+                    if (state.monitorEnabled) {
+                        playBuzzerSound();
+                    }
+                } else {
+                    buzzerStatus.textContent = '🔇';
+                    buzzerStatus.style.color = 'var(--color-text-secondary)';
+                    buzzerStatus.classList.remove('buzzer-active');
+                }
             }
+        }
+
+        // APDS-9960 Display Functions
+        function updateAPDS9960Display(apdsData) {
+            // Update proximity
+            document.getElementById('proximityValue').textContent = apdsData.proximity || 0;
+            
+            // Update ambient light
+            document.getElementById('ambientLightValue').textContent = apdsData.ambientLight || 0;
+            
+            // Update color temperature
+            document.getElementById('colorTempValue').textContent = Math.round(apdsData.colorTemperature || 0);
+            
+            // Update brightness
+            document.getElementById('brightnessValue').textContent = apdsData.brightness || 0;
+            
+            // Update color preview
+            updateColorPreview(apdsData.redLight, apdsData.greenLight, apdsData.blueLight);
+            
+            // Update gesture indicator
+            updateGestureIndicator(apdsData.gesture);
+        }
+
+        function updateColorPreview(red, green, blue) {
+            const preview = document.getElementById('colorPreview');
+            const r = Math.min(255, Math.max(0, red || 0));
+            const g = Math.min(255, Math.max(0, green || 0));
+            const b = Math.min(255, Math.max(0, blue || 0));
+            
+            preview.style.background = `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function updateGestureIndicator(gesture) {
+            const indicator = document.getElementById('gestureIndicator');
+            let gestureText = 'None';
+            
+            switch(gesture) {
+                case 1: gestureText = '👆 Up'; break;
+                case 2: gestureText = '👇 Down'; break;
+                case 3: gestureText = '👈 Left'; break;
+                case 4: gestureText = '👉 Right'; break;
+                default: gestureText = 'None';
+            }
+            
+            indicator.textContent = `Gesture: ${gestureText}`;
         }
 
         // ECG Chart Data Management
         function addECGDataPoint(value) {
-            const timestamp = Date.now();
+            const now = Date.now();
 
-            ecgChart.data.labels.push(timestamp);
-            ecgChart.data.datasets[0].data.push(value);
+            // Only add data point if enough time has passed (1 second)
+            if (ecgDataPoints.length === 0 || now - ecgDataPoints[ecgDataPoints.length - 1].timestamp >= state.ecgUpdateInterval) {
+                ecgChart.data.labels.push(now);
+                ecgChart.data.datasets[0].data.push(value);
+                ecgDataPoints.push({ timestamp: now, value: value });
 
-            if (ecgChart.data.labels.length > MAX_ECG_POINTS) {
-                ecgChart.data.labels.shift();
-                ecgChart.data.datasets[0].data.shift();
+                if (ecgChart.data.labels.length > MAX_ECG_POINTS) {
+                    ecgChart.data.labels.shift();
+                    ecgChart.data.datasets[0].data.shift();
+                    ecgDataPoints.shift();
+                }
+
+                ecgChart.update('none');
             }
+        }
 
-            ecgChart.update('none');
+        // Web Audio for Buzzer Simulation
+        function playBuzzerSound() {
+            if (!state.monitorEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'square';
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.1;
+                
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+                oscillator.stop(audioContext.currentTime + 1);
+            } catch (error) {
+                console.log('🔊 Buzzer sound simulation');
+            }
         }
 
         // Calculate data rate
@@ -1201,29 +1590,41 @@
             state.lastDataCountTime = now;
         }
 
-        // Initialize Application
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('🚀 Initializing BioMonitor Pro...');
-            testFirebaseConnection();
+        // Chart timeframe controls
+        document.querySelectorAll('.timeframe-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                chartTimeframe = this.dataset.timeframe;
 
-            // Update time every second
-            setInterval(updateTime, 1000);
+                // Update interval based on selection
+                switch(chartTimeframe) {
+                    case '1s':
+                        state.ecgUpdateInterval = 1000;
+                        break;
+                    case '5s':
+                        state.ecgUpdateInterval = 5000;
+                        break;
+                    case '30s':
+                        state.ecgUpdateInterval = 30000;
+                        break;
+                }
 
-            // Calculate data rate every 2 seconds
-            setInterval(calculateDataRate, 2000);
+                // Clear and reset chart data
+                ecgChart.data.labels = [];
+                ecgChart.data.datasets[0].data = [];
+                ecgDataPoints = [];
+                ecgChart.update('none');
 
-            // Chart timeframe controls
-            document.querySelectorAll('.timeframe-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    chartTimeframe = this.dataset.timeframe;
-                    // In a real implementation, this would adjust the chart data range
-                    console.log('Timeframe changed to:', chartTimeframe);
-                });
+                console.log('Timeframe changed to:', chartTimeframe, 'Interval:', state.ecgUpdateInterval + 'ms');
             });
         });
+
+        // Update time every second
+        setInterval(updateTime, 1000);
+
+        // Calculate data rate every 2 seconds
+        setInterval(calculateDataRate, 2000);
     </script>
 </body>
-
 </html>
