@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,26 +183,26 @@
             border: 1px solid var(--color-card-border);
             backdrop-filter: blur(10px);
         }
-        
+
         .toggle-label {
             color: var(--color-text-primary);
             font-weight: 600;
             font-size: 0.9rem;
         }
-        
+
         .toggle-switch {
             position: relative;
             display: inline-block;
             width: 50px;
             height: 24px;
         }
-        
+
         .toggle-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-        
+
         .toggle-slider {
             position: absolute;
             cursor: pointer;
@@ -213,7 +214,7 @@
             transition: .4s;
             border-radius: 24px;
         }
-        
+
         .toggle-slider:before {
             position: absolute;
             content: "";
@@ -225,12 +226,12 @@
             transition: .4s;
             border-radius: 50%;
         }
-        
-        input:checked + .toggle-slider {
+
+        input:checked+.toggle-slider {
             background-color: var(--color-success);
         }
-        
-        input:checked + .toggle-slider:before {
+
+        input:checked+.toggle-slider:before {
             transform: translateX(26px);
         }
 
@@ -238,7 +239,7 @@
         .dashboard-container {
             transition: all 0.5s ease;
         }
-        
+
         .dashboard-container.blurred {
             filter: blur(8px);
             pointer-events: none;
@@ -261,12 +262,12 @@
             z-index: 999;
             transition: opacity 0.5s ease;
         }
-        
+
         .welcome-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
-        
+
         .welcome-content {
             text-align: center;
             padding: 40px;
@@ -277,7 +278,7 @@
             max-width: 500px;
             margin: 20px;
         }
-        
+
         .welcome-content h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
@@ -286,12 +287,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .welcome-content p {
             color: var(--color-text-secondary);
             margin-bottom: 30px;
         }
-        
+
         .start-button {
             background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
             color: white;
@@ -303,7 +304,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .start-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 102, 204, 0.3);
@@ -764,6 +765,7 @@
                 transform: translateY(-30px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -775,6 +777,7 @@
                 transform: translateY(20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -786,6 +789,7 @@
                 transform: translateY(30px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -797,6 +801,7 @@
                 transform: translateX(-20px);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -804,21 +809,28 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.5;
             }
         }
 
         @keyframes heartbeat {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             25% {
                 transform: scale(1.1);
             }
+
             50% {
                 transform: scale(1);
             }
@@ -834,10 +846,13 @@
 
         /* Buzzer Animation */
         @keyframes buzzerAlert {
-            0%, 100% {
+
+            0%,
+            100% {
                 background-color: var(--color-danger);
                 transform: scale(1);
             }
+
             50% {
                 background-color: #ff6b6b;
                 transform: scale(1.1);
@@ -888,6 +903,7 @@
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
@@ -984,10 +1000,10 @@
                         </div>
                         <div class="card-badge" id="apdsBadge">Active</div>
                     </div>
-                    
+
                     <!-- Color Preview -->
                     <div class="color-preview" id="colorPreview"></div>
-                    
+
                     <!-- Sensor Grid -->
                     <div class="sensor-grid">
                         <div class="sensor-item">
@@ -1007,7 +1023,7 @@
                             <div class="sensor-label">Brightness</div>
                         </div>
                     </div>
-                    
+
                     <!-- Gesture Indicator -->
                     <div class="gesture-indicator" id="gestureIndicator">
                         Gesture: None
@@ -1238,7 +1254,7 @@
         });
 
         // Initialize Application
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeToggleSwitch();
             initializeWelcomeScreen();
             testFirebaseConnection();
@@ -1248,8 +1264,8 @@
         function initializeWelcomeScreen() {
             const welcomeScreen = document.getElementById('welcomeScreen');
             const startButton = document.getElementById('startButton');
-            
-            startButton.addEventListener('click', function() {
+
+            startButton.addEventListener('click', function () {
                 welcomeScreen.classList.add('hidden');
                 setTimeout(() => {
                     welcomeScreen.style.display = 'none';
@@ -1261,8 +1277,8 @@
         function initializeToggleSwitch() {
             const toggle = document.getElementById('monitorToggle');
             const dashboard = document.getElementById('dashboardContainer');
-            
-            toggle.addEventListener('change', function() {
+
+            toggle.addEventListener('change', function () {
                 state.monitorEnabled = this.checked;
                 if (this.checked) {
                     dashboard.classList.remove('blurred');
@@ -1361,7 +1377,7 @@
         // Update Dashboard
         function updateDashboard(data) {
             if (!state.monitorEnabled) return;
-            
+
             console.log('📊 Data received:', data);
             updateTime();
             state.dataPoints++;
@@ -1417,6 +1433,7 @@
             }
 
             // Update Risk Score
+            // Update Risk Score - USE ARDUINO'S CALCULATION
             if (data.postureAnalysis?.riskScore !== undefined) {
                 state.riskScore = data.postureAnalysis.riskScore;
                 document.getElementById('riskValue').textContent = formatValue(state.riskScore);
@@ -1449,6 +1466,20 @@
                     riskAlert.classList.remove('show');
                     systemAlert.classList.remove('show');
                 }
+            } else {
+                // Fallback: Calculate risk score if Arduino doesn't provide it
+                if (data.vitalSigns?.heartRate !== undefined && data.vitalSigns?.muscleStrain !== undefined) {
+                    state.riskScore = Math.min(state.muscleStrain + (state.heartRate > 100 ? 20 : 0), 100);
+                    document.getElementById('riskValue').textContent = formatValue(state.riskScore);
+
+                    let riskSeverity = 'success';
+                    if (state.riskScore > 40) riskSeverity = 'warning';
+                    if (state.riskScore > 70) riskSeverity = 'danger';
+
+                    updateCardSeverity('riskCard', riskSeverity);
+                    updateBadge('riskBadge', riskSeverity);
+                    updateProgressBar('riskProgressBar', state.riskScore, 100);
+                }
             }
 
             // Update APDS-9960 Data
@@ -1476,7 +1507,7 @@
                     buzzerStatus.textContent = '🔊';
                     buzzerStatus.style.color = 'var(--color-danger)';
                     buzzerStatus.classList.add('buzzer-active');
-                    
+
                     // Play buzzer sound if monitor is enabled
                     if (state.monitorEnabled) {
                         playBuzzerSound();
@@ -1493,19 +1524,19 @@
         function updateAPDS9960Display(apdsData) {
             // Update proximity
             document.getElementById('proximityValue').textContent = apdsData.proximity || 0;
-            
+
             // Update ambient light
             document.getElementById('ambientLightValue').textContent = apdsData.ambientLight || 0;
-            
+
             // Update color temperature
             document.getElementById('colorTempValue').textContent = Math.round(apdsData.colorTemperature || 0);
-            
+
             // Update brightness
             document.getElementById('brightnessValue').textContent = apdsData.brightness || 0;
-            
+
             // Update color preview
             updateColorPreview(apdsData.redLight, apdsData.greenLight, apdsData.blueLight);
-            
+
             // Update gesture indicator
             updateGestureIndicator(apdsData.gesture);
         }
@@ -1515,22 +1546,22 @@
             const r = Math.min(255, Math.max(0, red || 0));
             const g = Math.min(255, Math.max(0, green || 0));
             const b = Math.min(255, Math.max(0, blue || 0));
-            
+
             preview.style.background = `rgb(${r}, ${g}, ${b})`;
         }
 
         function updateGestureIndicator(gesture) {
             const indicator = document.getElementById('gestureIndicator');
             let gestureText = 'None';
-            
-            switch(gesture) {
+
+            switch (gesture) {
                 case 1: gestureText = '👆 Up'; break;
                 case 2: gestureText = '👇 Down'; break;
                 case 3: gestureText = '👈 Left'; break;
                 case 4: gestureText = '👉 Right'; break;
                 default: gestureText = 'None';
             }
-            
+
             indicator.textContent = `Gesture: ${gestureText}`;
         }
 
@@ -1557,19 +1588,19 @@
         // Web Audio for Buzzer Simulation
         function playBuzzerSound() {
             if (!state.monitorEnabled) return;
-            
+
             try {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
+
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
+
                 oscillator.type = 'square';
                 oscillator.frequency.value = 800;
                 gainNode.gain.value = 0.1;
-                
+
                 oscillator.start();
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
                 oscillator.stop(audioContext.currentTime + 1);
@@ -1592,13 +1623,13 @@
 
         // Chart timeframe controls
         document.querySelectorAll('.timeframe-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 document.querySelectorAll('.timeframe-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 chartTimeframe = this.dataset.timeframe;
 
                 // Update interval based on selection
-                switch(chartTimeframe) {
+                switch (chartTimeframe) {
                     case '1s':
                         state.ecgUpdateInterval = 1000;
                         break;
@@ -1627,4 +1658,5 @@
         setInterval(calculateDataRate, 2000);
     </script>
 </body>
+
 </html>
